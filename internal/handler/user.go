@@ -41,13 +41,14 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var req struct {
 		Username string `json:"username"`
 		Email    string `json:"email"`
+		Password string `json:"password"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 
-	user, err := h.svc.CreateUser(req.Username, req.Email)
+	user, err := h.svc.CreateUser(req.Username, req.Email, req.Password)
 	if err != nil {
 		http.Error(w, "Could not create user", http.StatusInternalServerError)
 		return

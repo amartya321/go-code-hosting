@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/amartya321/go-code-hosting/internal/model"
 	"github.com/amartya321/go-code-hosting/internal/storage"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService struct {
@@ -13,10 +14,21 @@ func NewUserService(repo storage.UserRepository) *UserService {
 	return &UserService{repo: repo}
 }
 
-func (s *UserService) CreateUser(username, email string) (model.User, error) {
+func (s *UserService) CreateUser(username, email, passwrod string) (model.User, error) {
 	user := model.NewUser(username, email)
-	err := s.repo.Create(user)
-	return user, err
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(passwrod), bcrypt.DefaultCost)
+	if err != nil {
+		return user, err
+	}
+
+	user.PasswordHash = string(hash)
+
+	if err := s.repo.Create(user); err != nil {
+		return user, err
+	}
+
+	return user, nil
 }
 
 func (s *UserService) ListUsers() []model.User {

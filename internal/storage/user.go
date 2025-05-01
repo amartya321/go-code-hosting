@@ -5,7 +5,7 @@ import "github.com/amartya321/go-code-hosting/internal/model"
 type UserRepository interface {
 	Create(users model.User) error
 	List() []model.User
-	FindByUsername(username string) (model.User, error)
+	FindByUsername(username string) (*model.User, error)
 }
 
 type InMemoryUserRepository struct {
