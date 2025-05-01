@@ -34,7 +34,7 @@ func NewSQLiteUserRepository(dbPath string) (*SQLiteUserRepository, error) {
 }
 
 func (r *SQLiteUserRepository) Create(user model.User) error {
-	_, err := r.db.Exec(`INSERT INTO users (id, username, email) VALUES (?, ?, ?)`,
+	_, err := r.db.Exec(`INSERT INTO users (id, username, email, password_hash) VALUES (?, ?, ?, ?)`,
 		user.ID, user.Username, user.Email)
 	return err
 }
