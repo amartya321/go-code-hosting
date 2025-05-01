@@ -22,7 +22,8 @@ func NewSQLiteUserRepository(dbPath string) (*SQLiteUserRepository, error) {
 		CREATE TABLE IF NOT EXISTS users (
 			id TEXT PRIMARY KEY,
 			username TEXT NOT NULL,
-			email TEXT NOT NULL
+			email TEXT NOT NULL,
+			password_hash TEXT NOT NULL
 		)
 	`)
 	if err != nil {
@@ -53,4 +54,19 @@ func (r *SQLiteUserRepository) List() []model.User {
 		}
 	}
 	return users
+}
+
+func (s *SQLiteUserRepository) FindByUsername(username string) (*model.User, error) {
+	row := s.db.QueryRow(
+		`SELECT id, username, email, password_hash 
+		FROM users WHERE username = ?`, username,
+	)
+	var u model.User
+	if err := row.Scan(&u.ID, &u.Username, &u.Email, &u.PasswordHash); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &u, nil
 }
