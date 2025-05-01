@@ -2,6 +2,7 @@ package storage
 
 import (
 	"database/sql"
+	"log"
 
 	"github.com/amartya321/go-code-hosting/internal/model"
 	_ "modernc.org/sqlite" // pure Go SQLite driver
@@ -35,7 +36,10 @@ func NewSQLiteUserRepository(dbPath string) (*SQLiteUserRepository, error) {
 
 func (r *SQLiteUserRepository) Create(user model.User) error {
 	_, err := r.db.Exec(`INSERT INTO users (id, username, email, password_hash) VALUES (?, ?, ?, ?)`,
-		user.ID, user.Username, user.Email)
+		user.ID, user.Username, user.Email, user.PasswordHash)
+	if err != nil {
+		log.Printf("SQLiteUserRepository.Create failed: %v", err)
+	}
 	return err
 }
 

@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/amartya321/go-code-hosting/internal/model"
 	"github.com/amartya321/go-code-hosting/internal/storage"
 	"golang.org/x/crypto/bcrypt"
@@ -19,13 +21,14 @@ func (s *UserService) CreateUser(username, email, passwrod string) (model.User, 
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(passwrod), bcrypt.DefaultCost)
 	if err != nil {
-		return user, err
+		return user, fmt.Errorf("password hashing failed: %w", err)
+
 	}
 
 	user.PasswordHash = string(hash)
 
 	if err := s.repo.Create(user); err != nil {
-		return user, err
+		return user, fmt.Errorf("fail while accessing service: %w", err)
 	}
 
 	return user, nil
