@@ -22,10 +22,12 @@ func main() {
 	// Create the in-memory store and user service and user handler
 	//	store := storage.NewInMemoryUserRepository()
 	userService := service.NewUserService(store)
+	authService := service.NewAuthService()
 	userHandler := handler.NewUserHandler(userService)
+	authHandler := handler.NewAuthHandler(userService, authService)
 
 	// Register the handler
-	handler.RegisterRoutes(r, userHandler)
+	handler.RegisterRoutes(r, userHandler, authHandler)
 
 	// Start the HTTP server
 	log.Println("Starting server on :8080...")
