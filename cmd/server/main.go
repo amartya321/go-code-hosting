@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/amartya321/go-code-hosting/internal/handler"
 	"github.com/amartya321/go-code-hosting/internal/handler/service"
@@ -11,6 +12,11 @@ import (
 )
 
 func main() {
+
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		log.Fatal("JWT_SECRET environment variable must be set")
+	}
 
 	store, err := storage.NewSQLiteUserRepository("users.db")
 	if err != nil {
@@ -22,7 +28,7 @@ func main() {
 	// Create the in-memory store and user service and user handler
 	//	store := storage.NewInMemoryUserRepository()
 	userService := service.NewUserService(store)
-	authService := service.NewAuthService()
+	authService := service.NewAuthService(jwtSecret)
 	userHandler := handler.NewUserHandler(userService)
 	authHandler := handler.NewAuthHandler(userService, authService)
 

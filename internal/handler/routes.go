@@ -13,15 +13,11 @@ func RegisterRoutes(r *chi.Mux, userHandler *UserHandler, authHandler *AuthHandl
 		w.Write([]byte("Welcome to Go Code Hosting Service 🚀"))
 	})
 
-	// Public: login to receive a JWT
 	r.Post("/login", authHandler.Login)
 
-	// Protected: any /users route now requires a valid JWT
-	r.Route("/users", func(r chi.Router) {
-		r.Use(middleware.JWTMiddleware)
+	r.Post("/users", userHandler.CreateUser)
 
-		r.Post("/", userHandler.CreateUser)
-		r.Get("/", userHandler.ListUsers)
-	})
+	r.With(middleware.JWTMiddleware).
+		Get("/users", userHandler.ListUsers)
 
 }
