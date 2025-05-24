@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -8,6 +9,10 @@ import (
 
 	"github.com/golang-jwt/jwt"
 )
+
+type ctxKey string
+
+const ctxKeyUserID ctxKey = "userID"
 
 func JWTMiddleware(next http.Handler) http.Handler {
 	secret := []byte(os.Getenv("JWT_SECRET"))
@@ -33,6 +38,18 @@ func JWTMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		next.ServeHTTP(w, r)
+		// Extract the “sub” claim
+		claims := token.Claims.(*jwt.MapClaims)
+		sub, ok := claims["sub"].(string)
+		if !ok || sub == "" {
+			http.Error(w, "Invalid token claims", http.StatusUnauthorized)
+			return
+		}
+
+		// Put it into context for handlers downstream
+		ctx := context.WithValue(r.Context(), ctxKeyUserID, sub)
+
+		next.ServeHTTP(w, r.WithContext(ctx))
+
 	})
 }
