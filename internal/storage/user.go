@@ -7,6 +7,7 @@ type UserRepository interface {
 	List() []model.User
 	FindByUserName(username string) (*model.User, error)
 	FindByUserId(username string) (*model.User, error)
+	UpdateUser(*model.User) error
 }
 
 type InMemoryUserRepository struct {

@@ -17,6 +17,11 @@ func NewUserService(repo storage.UserRepository) *UserService {
 	return &UserService{repo: repo}
 }
 
+type UpdateUserInput struct {
+	Email    *string `json:"email,omitempty"`
+	Password *string `json:"password,omitempty"`
+}
+
 func (s *UserService) CreateUser(username, email, passwrod string) (model.User, error) {
 	user := model.NewUser(username, email)
 
@@ -71,6 +76,29 @@ func (s *UserService) GetUserByID(id string) (*model.User, error) {
 	if user == nil {
 		log.Printf("UserService.GetUserByID(%q) user not found", id)
 		return nil, fmt.Errorf("user not found")
+	}
+	return user, nil
+}
+
+func (s *UserService) UpdateUser(id string, input UpdateUserInput) (*model.User, error) {
+	user, err := s.repo.FindByUserId(id)
+	if err != nil {
+		log.Printf("UserService.UpdateUser(%q) FindByUserId failed: %v", id, err)
+		return nil, err
+	}
+	if input.Email != nil {
+		user.Email = *input.Email
+	}
+	if input.Password != nil {
+		hash, err := bcrypt.GenerateFromPassword([]byte(*input.Password), bcrypt.DefaultCost)
+		if err != nil {
+			log.Printf("UserService.UpdateUser(%q) password hash generation failed: %v", id, err)
+			return nil, err
+		}
+		user.PasswordHash = string(hash)
+	}
+	if err := s.repo.UpdateUser(user); err != nil {
+		return nil, err
 	}
 	return user, nil
 }

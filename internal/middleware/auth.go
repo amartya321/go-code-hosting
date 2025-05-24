@@ -53,3 +53,9 @@ func JWTMiddleware(next http.Handler) http.Handler {
 
 	})
 }
+
+// Helper for handlers to fetch the userID
+func UserIDFromContext(ctx context.Context) (string, bool) {
+	uid, ok := ctx.Value(ctxKeyUserID).(string)
+	return uid, ok
+}

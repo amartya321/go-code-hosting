@@ -89,3 +89,15 @@ func (s *SQLiteUserRepository) FindByUserId(userId string) (*model.User, error) 
 	}
 	return &u, nil
 }
+
+func (s *SQLiteUserRepository) UpdateUser(user *model.User) error {
+	_, err := s.db.Exec(
+		`UPDATE users SET username = ?, email = ?, password_hash = ? WHERE id = ?`,
+		user.Username, user.Email, user.PasswordHash, user.ID,
+	)
+	if err != nil {
+		log.Printf("SQLiteUserRepository.UpdateUser failed: %v", err)
+	}
+	return err
+
+}
