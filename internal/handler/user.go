@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/amartya321/go-code-hosting/internal/handler/service"
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
 )
 
 // func handleCreateUser(w http.ResponseWriter, r *http.Request) {
@@ -82,5 +82,4 @@ func (h *UserHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	json.NewEncoder(w).Encode(user)
-
 }
