@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/amartya321/go-code-hosting/internal/handler/service"
+	"github.com/go-chi/chi"
 )
 
 // func handleCreateUser(w http.ResponseWriter, r *http.Request) {
@@ -63,4 +64,23 @@ func (h *UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 	users := h.svc.ListUsers()
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
+}
+
+func (h *UserHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	if id == "" {
+		http.Error(w, "In URI Id is not valid", http.StatusBadRequest)
+		return
+	}
+	user, err := h.svc.GetUserByID(id)
+	if err != nil {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+	if user == nil {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+	json.NewEncoder(w).Encode(user)
+
 }

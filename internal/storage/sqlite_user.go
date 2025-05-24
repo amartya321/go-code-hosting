@@ -60,10 +60,25 @@ func (r *SQLiteUserRepository) List() []model.User {
 	return users
 }
 
-func (s *SQLiteUserRepository) FindByUsername(username string) (*model.User, error) {
+func (s *SQLiteUserRepository) FindByUserName(username string) (*model.User, error) {
 	row := s.db.QueryRow(
 		`SELECT id, username, email, password_hash 
 		FROM users WHERE username = ?`, username,
+	)
+	var u model.User
+	if err := row.Scan(&u.ID, &u.Username, &u.Email, &u.PasswordHash); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+func (s *SQLiteUserRepository) FindByUserId(userId string) (*model.User, error) {
+	row := s.db.QueryRow(
+		`SELECT id, username, email, password_hash 
+		FROM users WHERE id = ?`, userId,
 	)
 	var u model.User
 	if err := row.Scan(&u.ID, &u.Username, &u.Email, &u.PasswordHash); err != nil {

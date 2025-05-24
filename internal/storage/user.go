@@ -5,7 +5,8 @@ import "github.com/amartya321/go-code-hosting/internal/model"
 type UserRepository interface {
 	Create(users model.User) error
 	List() []model.User
-	FindByUsername(username string) (*model.User, error)
+	FindByUserName(username string) (*model.User, error)
+	FindByUserId(username string) (*model.User, error)
 }
 
 type InMemoryUserRepository struct {
@@ -27,7 +28,7 @@ func (s *InMemoryUserRepository) List() []model.User {
 	return s.users
 }
 
-func (s *InMemoryUserRepository) FindByUsername(username string) (*model.User, error) {
+func (s *InMemoryUserRepository) FindByUserName(username string) (*model.User, error) {
 	for _, user := range s.users {
 		if user.Username == username {
 			return &user, nil

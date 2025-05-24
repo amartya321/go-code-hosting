@@ -43,7 +43,7 @@ func (s *UserService) ListUsers() []model.User {
 
 // Authenticate checks the username/password and returns the user if valid
 func (s *UserService) Authenticate(username, passwrod string) (*model.User, error) {
-	user, err := s.repo.FindByUsername(username)
+	user, err := s.repo.FindByUserName(username)
 	if err != nil {
 		log.Printf("UserService.Authenticate(%q) FindByUsername failed: %v", username, err)
 		return nil, err
@@ -60,5 +60,17 @@ func (s *UserService) Authenticate(username, passwrod string) (*model.User, erro
 	}
 
 	return user, nil
+}
 
+func (s *UserService) GetUserByID(id string) (*model.User, error) {
+	user, err := s.repo.FindByUserId(id)
+	if err != nil {
+		log.Printf("UserService.GetUserByID(%q) FindByUserId failed: %v", id, err)
+		return nil, err
+	}
+	if user == nil {
+		log.Printf("UserService.GetUserByID(%q) user not found", id)
+		return nil, fmt.Errorf("user not found")
+	}
+	return user, nil
 }

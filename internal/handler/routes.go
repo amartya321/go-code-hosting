@@ -15,9 +15,19 @@ func RegisterRoutes(r *chi.Mux, userHandler *UserHandler, authHandler *AuthHandl
 
 	r.Post("/login", authHandler.Login)
 
-	r.Post("/users", userHandler.CreateUser)
+	r.Route("/users", func(r chi.Router) {
+		// Public: create
+		r.Post("/", userHandler.CreateUser)
 
-	r.With(middleware.JWTMiddleware).
-		Get("/users", userHandler.ListUsers)
+		// Protected: anything below
+		r.Group(func(r chi.Router) {
+			r.Use(middleware.JWTMiddleware)
+
+			r.Get("/", userHandler.ListUsers)
+			r.Get("/{id}", userHandler.GetUserByID)
+			// r.Put("/{id}",userHandler.UpdateUser)
+			// r.Delete("/{id}", userHandler.DeleteUser)
+		})
+	})
 
 }
