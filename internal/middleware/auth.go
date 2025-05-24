@@ -39,7 +39,7 @@ func JWTMiddleware(next http.Handler) http.Handler {
 		}
 
 		// Extract the “sub” claim
-		claims := token.Claims.(*jwt.MapClaims)
+		claims := token.Claims.(jwt.MapClaims)
 		sub, ok := claims["sub"].(string)
 		if !ok || sub == "" {
 			http.Error(w, "Invalid token claims", http.StatusUnauthorized)
