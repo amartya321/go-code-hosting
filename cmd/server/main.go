@@ -6,6 +6,9 @@ import (
 	"net/http"
 	"os"
 
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "modernc.org/sqlite" // pure Go SQLite driver
+
 	"github.com/amartya321/go-code-hosting/internal/handler"
 	"github.com/amartya321/go-code-hosting/internal/handler/service"
 	"github.com/amartya321/go-code-hosting/internal/storage"
@@ -24,7 +27,7 @@ func main() {
 
 	// Open or create the SQLite database
 	dbPath := "users.db"
-	db, err := sql.Open("sqlite3", dbPath)
+	db, err := sql.Open("sqlite", dbPath)
 	if err != nil {
 		log.Fatalf("failed to open database: %v", err)
 	}
@@ -37,7 +40,7 @@ func main() {
 	}
 	m, err := migrate.NewWithDatabaseInstance(
 		"file://migrations",
-		"sqlite3", driver,
+		"sqlite", driver,
 	)
 	if err != nil {
 		log.Fatalf("failed to initialize migrate: %v", err)
