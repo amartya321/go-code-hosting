@@ -13,26 +13,9 @@ type SQLiteUserRepository struct {
 	db *sql.DB
 }
 
-func NewSQLiteUserRepository(dbPath string) (*SQLiteUserRepository, error) {
-	db, err := sql.Open("sqlite", dbPath)
-	if err != nil {
-		return nil, err
-	}
+func NewSQLiteUserRepositoryFromDB(db *sql.DB) *SQLiteUserRepository {
 
-	// Create users table if it doesn't exist
-	_, err = db.Exec(`
-		CREATE TABLE IF NOT EXISTS users (
-			id TEXT PRIMARY KEY,
-			username TEXT NOT NULL,
-			email TEXT NOT NULL,
-			password_hash TEXT NOT NULL
-		)
-	`)
-	if err != nil {
-		return nil, err
-	}
-
-	return &SQLiteUserRepository{db: db}, nil
+	return &SQLiteUserRepository{db: db}
 }
 
 func (r *SQLiteUserRepository) Create(user model.User) error {
