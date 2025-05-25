@@ -115,3 +115,22 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(updatedUser)
 
 }
+
+func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	authId, ok := middleware.UserIDFromContext(r.Context())
+	if !ok || authId == "" {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	id := chi.URLParam(r, "id")
+	if id != authId {
+		http.Error(w, "Unauthorized to update this user", http.StatusForbidden)
+		return
+	}
+
+	if err := h.svc.DeleteUser(id); err != nil {
+		http.Error(w, "Could not delete user", http.StatusInternalServerError)
+		return
+	}
+}

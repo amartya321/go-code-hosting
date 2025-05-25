@@ -26,7 +26,7 @@ func RegisterRoutes(r *chi.Mux, userHandler *UserHandler, authHandler *AuthHandl
 			r.Get("/", userHandler.ListUsers)
 			r.Get("/{id}", userHandler.GetUserByID)
 			r.Put("/{id}", userHandler.UpdateUser)
-			// r.Delete("/{id}", userHandler.DeleteUser)
+			r.Delete("/{id}", userHandler.DeleteUser)
 		})
 	})
 

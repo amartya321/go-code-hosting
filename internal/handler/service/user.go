@@ -102,3 +102,7 @@ func (s *UserService) UpdateUser(id string, input UpdateUserInput) (*model.User,
 	}
 	return user, nil
 }
+
+func (s *UserService) DeleteUser(id string) error {
+	return s.repo.DeleteUser(id)
+}

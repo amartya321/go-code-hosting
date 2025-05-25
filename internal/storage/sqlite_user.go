@@ -2,6 +2,7 @@ package storage
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	"github.com/amartya321/go-code-hosting/internal/model"
@@ -100,4 +101,16 @@ func (s *SQLiteUserRepository) UpdateUser(user *model.User) error {
 	}
 	return err
 
+}
+
+func (s *SQLiteUserRepository) DeleteUser(id string) error {
+	result, err := s.db.Exec(`DELETE FROM users WHERE id =?`, id)
+	if err != nil {
+		log.Printf("SQLiteUserRepository.Delete failed: %v", err)
+	}
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		return fmt.Errorf("user not found")
+	}
+	return nil
 }

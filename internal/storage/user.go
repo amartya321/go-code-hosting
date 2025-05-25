@@ -8,6 +8,7 @@ type UserRepository interface {
 	FindByUserName(username string) (*model.User, error)
 	FindByUserId(username string) (*model.User, error)
 	UpdateUser(*model.User) error
+	DeleteUser(id string) error
 }
 
 type InMemoryUserRepository struct {
