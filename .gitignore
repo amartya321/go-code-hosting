@@ -19,3 +19,6 @@ vendor/
 
 # OS files
 Thumbs.db
+
+# database file
+users.db
