@@ -10,7 +10,8 @@ import (
 	"github.com/amartya321/go-code-hosting/internal/handler/service"
 	"github.com/amartya321/go-code-hosting/internal/storage"
 	"github.com/go-chi/chi/v5"
-	"github.com/golang-migrate/migrate"
+	"github.com/golang-migrate/migrate/v4"
+
 	"github.com/golang-migrate/migrate/v4/database/sqlite"
 )
 
