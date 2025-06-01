@@ -13,7 +13,6 @@ type UserRepository interface {
 
 type InMemoryUserRepository struct {
 	users []model.User // instead of `users []model.User`
-
 }
 
 //Kind of like a constructor for the InMemoryUserRepository struct
